@@ -2,7 +2,7 @@ package api.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistaence.Column;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
