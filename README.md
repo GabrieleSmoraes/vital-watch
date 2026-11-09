@@ -87,8 +87,9 @@ A API é organizada em camadas. Uma requisição entra pelo Controller, passa pe
 
 | Entidade | Migration | Model | Repository | DTOs | Mapper | Service | Controller |
 |---|---|---|---|---|---|---|---|
-| Livro *(exemplo)* | `V1__criar_livros.sql`, pronta | `Livro`, pronta | `LivroRepository`, pronto | `LivroRequestDTO`, `LivroResponseDTO`, prontos | `LivroMapper`, implementado | `LivroService`, implementado | `LivroController`, implementado |
-| ... | ... | ... | ... | ... | ... | ... | ... |
+| Idoso | `V1__criar_idosos.sql`, pronta | `Idoso`, pronta | `IdosoRepository`, pronto | `IdosoRequestDTO`, `IdosoResponseDTO`, prontos | `IdosoMapper`, implementado | `IdosoService`, implementado | `IdosoController`, implementado |
+| Medicao | `V2__criar_medicoes.sql`, a criar | `Medicao`, a criar | `MedicaoRepository`, a criar | `MedicaoRequestDTO`, `MedicaoResponseDTO`, a criar | `MedicaoMapper`, a criar | `MedicaoService`, a criar | `MedicaoController`, a criar |
+| Alerta | `V3__criar_alertas.sql`, a criar | `Alerta`, a criar | `AlertaRepository`, a criar | `AlertaRequestDTO`, `AlertaResponseDTO`, a criar | `AlertaMapper`, a criar | `AlertaService`, a criar | `AlertaController`, a criar |
 
 ## Entidades
 
