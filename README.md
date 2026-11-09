@@ -1,4 +1,4 @@
-# {{Nome do Projeto}}
+# Vital Watch
 
 > **Este é o ponto de partida do projeto do grupo.** Apague este bloco antes de entregar.
 >
@@ -19,7 +19,7 @@
 >
 > Os exemplos marcados com *(exemplo)* são de uma biblioteca. O projeto completo dela está em `Aula 10-11/exemplo-biblioteca`.
 
-{{Uma ou duas frases: o que o sistema faz e para quem. Quem nunca viu o projeto tem que entender o que ele é lendo só este parágrafo.}}
+O Vital Watch é uma API que recebe os batimentos enviados pelo relógio de idosos com problemas cardíacos que moram sozinhos e registra um alerta para a família quando uma medição sai do normal.
 
 Projeto Final da disciplina de Backend (Engenharia de Software, SATC). **Etapa 1: arquitetura do backend.**
 
@@ -39,32 +39,35 @@ Projeto Final da disciplina de Backend (Engenharia de Software, SATC). **Etapa 1
 
 | Nome | GitHub |
 |---|---|
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
+| Gabriele Moraes | [@GabrieleSmoraes](https://github.com/GabrieleSmoraes) |
+| Leticia Juvencio | [@LeticiaJuvencio](https://github.com/LeticiaJuvencio) |
+| Camila da Rosa | [@camiladarosa789-ux](https://github.com/camiladarosa789-ux) |
 
 ## O problema
 
-**Tema sorteado:** {{tema}}
+**Tema sorteado:** Saúde e Bem-Estar
 
-{{Em 3 a 5 linhas: o problema que o grupo criou dentro do tema, quem sofre com ele hoje e o que o sistema muda.}}
+Muitos idosos com problemas cardíacos, ou com outras condições que alteram os batimentos, moram sozinhos. Se um deles passa mal em casa, pode não conseguir pedir ajuda, e a família, que cuida à distância, só fica sabendo depois. Com o Vital Watch, o relógio envia os batimentos para a API, que registra um alerta quando a medição sai dos limites daquele idoso. A família consulta os alertas e registra o que foi feito. O sistema ajuda a acompanhar, mas não dá diagnóstico.
 
 **Quem usa o sistema:**
 
 | Quem | O que faz no sistema |
 |---|---|
-| Bibliotecário *(exemplo)* | Cadastra livros e leitores, registra empréstimos e devoluções |
-| ... | ... |
+| Familiar ou cuidador | Cadastra o idoso e os limites dele, consulta os alertas e encerra cada um informando o que foi feito |
+| Relógio do idoso (simulado) | Envia as medições de batimento |
 
-**Regras de negócio.** No mínimo 3, criadas pelo grupo a partir do problema: o que o sistema precisa garantir ou impedir. Precisam atender à necessidade do tema e estar implementadas no código. O que só confere formato (campo obrigatório, número positivo) é validação do DTO, não regra de negócio.
+**Regras de negócio:**
 
 | # | Regra | Onde está no código | Rota que usa |
 |---|---|---|---|
-| R1 *(exemplo)* | Um leitor não pode ter mais de 3 empréstimos em aberto | `EmprestimoService` | `POST /emprestimos` |
-| R2 | ... | ... | ... |
-| R3 | ... | ... | ... |
+| R1 | Cada idoso tem um limite mínimo e um máximo de batimentos (padrão: 60 a 100 por minuto). Uma medição fora desses limites gera um alerta. O cadastro é recusado se o mínimo não for menor que o máximo. | ... | ... |
+| R2 | Se a medição vier marcada como exercício, batimento alto só gera alerta acima de 220 menos a idade do idoso. O limite mínimo continua igual. | ... | ... |
+| R3 | Uma medição repetida (mesmo idoso, mesma data e hora) é recusada com erro 400. | ... | ... |
+| R4 | Um alerta já encerrado não pode ser encerrado de novo (erro 400). Para encerrar, é preciso informar o que foi feito. | ... | ... |
 
-**Fora do escopo:** {{o que o grupo decidiu não fazer, para o projeto caber no semestre}}
+Os valores são de referência, e o projeto usa dados fictícios. Fontes: [MedlinePlus](https://medlineplus.gov/ency/article/003399.htm) (60 a 100 em repouso) e [Manual MSD](https://www.msdmanuals.com/home/multimedia/table/estimating-target-heart-rate) (220 menos a idade).
+
+**Fora do escopo:** envio de SMS ou notificação no celular (a família consulta os alertas na API), integração com um relógio de verdade (as medições são enviadas pelo Swagger ou pelo Postman), login e diagnóstico médico.
 
 ## Tecnologias
 

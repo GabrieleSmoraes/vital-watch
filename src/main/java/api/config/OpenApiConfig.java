@@ -25,7 +25,7 @@ public class OpenApiConfig {
         // Monta o documento com o bloco "info" preenchido.
         return new OpenAPI()
                 .info(new Info()
-                        // TROQUE: nome da API do grupo, em destaque no Swagger UI.
+                        // Nome da API, em destaque no Swagger UI.
                         .title("Projeto Final - Vital Watch")
                         // Versão do contrato -- aqui, a etapa em que ele foi publicado.
                         .version("Etapa 1")
