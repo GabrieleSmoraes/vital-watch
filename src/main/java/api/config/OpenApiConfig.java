@@ -29,8 +29,12 @@ public class OpenApiConfig {
                         .title("Projeto Final - Vital Watch")
                         // Versão do contrato -- aqui, a etapa em que ele foi publicado.
                         .version("Etapa 1")
-                        // TROQUE: tema, integrantes e o que a API faz (aceita Markdown).
-                        .description("API REST do Projeto Final da disciplina de Backend (SATC). "
+                        // Tema, integrantes e o que a API faz (aceita Markdown).
+                        .description("API REST do Projeto Final da disciplina de Backend (SATC), "
+                                + "tema **Saúde e Bem-Estar**. Recebe os batimentos enviados pelo relógio "
+                                + "de idosos que moram sozinhos e registra um alerta para a família quando "
+                                + "uma medição sai do normal. Grupo: Gabriele Moraes, Leticia Juvencio e "
+                                + "Camila da Rosa. "
                                 + "Todo corpo de requisição e de resposta é um **DTO** "
                                 + "e todo erro 400/404 sai no formato `ErroDTO`."));
     }
