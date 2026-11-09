@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 // CAMADA: DTO
@@ -24,6 +25,7 @@ public record MedicaoRequestDTO(
 
         @Schema(description = "Data e hora em que o relógio mediu", example = "2026-11-09T08:30:00")
         @NotNull(message = "Data e hora da medição é obrigatória")
+        @PastOrPresent(message = "Data e hora da medição não pode estar no futuro")
         LocalDateTime dataHoraMedicao,
 
         @Schema(description = "Se a pessoa estava se exercitando", example = "false")
