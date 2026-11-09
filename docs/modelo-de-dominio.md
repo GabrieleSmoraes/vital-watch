@@ -1,78 +1,83 @@
 # Modelo de domínio
 
-> No mínimo **3 entidades** e pelo menos **um relacionamento**. As linhas marcadas com *(exemplo)* mostram o nível de detalhe esperado: apague e escreva as do grupo.
-
 ## Entidades
 
-Uma tabela por entidade. A coluna **Regra** é o que vira `NOT NULL`, `UNIQUE` ou validação no DTO.
+### Idoso
 
-### Livro *(exemplo)*
-
-Um exemplar do acervo que pode ser emprestado.
+Uma pessoa acompanhada pelo sistema, com os seus limites de batimento.
 
 | Atributo | Tipo Java | Coluna | Obrigatório | Regra |
 |---|---|---|---|---|
 | `id` | `Long` | `id` | sim | Gerado pelo banco |
-| `titulo` | `String` | `titulo` | sim | Até 255 caracteres |
-| `isbn` | `String` | `isbn` | sim | Até 20 caracteres. Não é único: exemplares do mesmo título repetem o ISBN |
-| `disponivel` | `boolean` | `disponivel` | sim | Nasce `true`; o cliente não controla |
+| `nome` | `String` | `nome` | sim | Até 100 caracteres |
+| `dataNascimento` | `LocalDate` | `data_nascimento` | sim | Precisa estar no passado. Usada para calcular a idade na R2 |
+| `limiteMinimo` | `Integer` | `limite_minimo` | sim | Maior que zero. Se o cliente não mandar, a API usa 60 (R1) |
+| `limiteMaximo` | `Integer` | `limite_maximo` | sim | Maior que zero. Se o cliente não mandar, a API usa 100. Precisa ser maior que o mínimo (R1) |
 
-### {{Entidade 2}}
+### Medicao
 
-{{O que ela representa, em uma linha.}}
-
-| Atributo | Tipo Java | Coluna | Obrigatório | Regra |
-|---|---|---|---|---|
-| `id` | `Long` | `id` | sim | Gerado pelo banco |
-| ... | ... | ... | ... | ... |
-
-### {{Entidade 3}}
-
-{{O que ela representa, em uma linha.}}
+Um batimento enviado pelo relógio de um idoso.
 
 | Atributo | Tipo Java | Coluna | Obrigatório | Regra |
 |---|---|---|---|---|
 | `id` | `Long` | `id` | sim | Gerado pelo banco |
-| ... | ... | ... | ... | ... |
+| `idoso` | `Idoso` | `idoso_id` | sim | O idoso precisa existir |
+| `batimentos` | `Integer` | `batimentos` | sim | Batimentos por minuto, maior que zero |
+| `dataHoraMedicao` | `LocalDateTime` | `data_hora_medicao` | sim | Não pode estar no futuro. Não se repete para o mesmo idoso (R3) |
+| `emExercicio` | `Boolean` | `em_exercicio` | sim | Se `true`, o limite alto passa a ser 220 menos a idade (R2) |
+
+### Alerta
+
+O aviso de que uma medição saiu dos limites do idoso. Quem cria é a API, nunca o cliente.
+
+| Atributo | Tipo Java | Coluna | Obrigatório | Regra |
+|---|---|---|---|---|
+| `id` | `Long` | `id` | sim | Gerado pelo banco |
+| `medicao` | `Medicao` | `medicao_id` | sim | A medição que gerou o alerta. Única: uma medição gera no máximo um alerta |
+| `tipo` | `String` | `tipo` | sim | `ALTO` (acima do limite máximo) ou `BAIXO` (abaixo do mínimo). A API decide (R1) |
+| `limite` | `Integer` | `limite` | sim | O limite que a medição ultrapassou. Em exercício, o alto é 220 menos a idade (R2) |
+| `providencia` | `String` | `providencia` | não | O que a família fez. Vazio enquanto o alerta está aberto; obrigatório para encerrar (R4) |
+| `dataHoraEncerramento` | `LocalDateTime` | `data_hora_encerramento` | não | Vazio enquanto o alerta está aberto. A API preenche ao encerrar; preenchido, o alerta não encerra de novo (R4) |
 
 ## Relacionamentos
 
 | De | Para | Tipo | No banco | No código |
 |---|---|---|---|---|
-| Emprestimo *(exemplo)* | Leitor | muitos para um | `emprestimos.leitor_id` referencia `leitores(id)` | `@ManyToOne` em `Emprestimo` |
-| Emprestimo *(exemplo)* | Livro | muitos para um | `emprestimos.livro_id` referencia `livros(id)` | `@ManyToOne` em `Emprestimo` |
-| ... | ... | ... | ... | ... |
+| Medicao | Idoso | muitos para um | `medicoes.idoso_id` referencia `idosos(id)` | `@ManyToOne` em `Medicao` |
+| Alerta | Medicao | um para um | `alertas.medicao_id` referencia `medicoes(id)`, com `UNIQUE` | `@OneToOne` em `Alerta` |
 
 ## Diagrama ER
 
-O GitHub desenha o bloco abaixo sozinho. Troque pelas tabelas do grupo, com os nomes das colunas como estarão no banco (`snake_case`).
-
 ```mermaid
 erDiagram
-    LEITORES ||--o{ EMPRESTIMOS : "faz"
-    LIVROS ||--o{ EMPRESTIMOS : "aparece em"
+    IDOSOS ||--o{ MEDICOES : "tem"
+    MEDICOES ||--o| ALERTAS : "pode gerar"
 
-    LEITORES {
+    IDOSOS {
         bigint id PK
         varchar nome
-        varchar email
+        date data_nascimento
+        integer limite_minimo
+        integer limite_maximo
     }
-    LIVROS {
+    MEDICOES {
         bigint id PK
-        varchar titulo
-        varchar isbn
-        boolean disponivel
+        bigint idoso_id FK
+        integer batimentos
+        timestamp data_hora_medicao
+        boolean em_exercicio
     }
-    EMPRESTIMOS {
+    ALERTAS {
         bigint id PK
-        bigint leitor_id FK
-        bigint livro_id FK
-        date data_retirada
-        date data_devolucao
+        bigint medicao_id FK
+        varchar tipo
+        integer limite
+        varchar providencia
+        timestamp data_hora_encerramento
     }
 ```
 
-Como ler: `||--o{` é "um para muitos". Um leitor faz zero ou vários empréstimos, e cada empréstimo é de exatamente um leitor.
+Como ler: `||--o{` é "um para muitos": um idoso tem zero ou várias medições, e cada medição é de exatamente um idoso. `||--o|` é "um para zero ou um": uma medição gera no máximo um alerta (só quando sai dos limites), e cada alerta vem de exatamente uma medição.
 
 ## Migrations
 
@@ -80,6 +85,6 @@ Todas existem em `src/main/resources/db/migration`, uma tabela por arquivo. A or
 
 | Versão | Arquivo | O que cria |
 |---|---|---|
-| V1 *(exemplo)* | `V1__criar_livros.sql` | Tabela `livros` |
-| V2 *(exemplo)* | `V2__criar_leitores.sql` | Tabela `leitores` |
-| V3 *(exemplo)* | `V3__criar_emprestimos.sql` | Tabela `emprestimos`, com as duas chaves estrangeiras |
+| V1 | `V1__criar_idosos.sql` | Tabela `idosos` |
+| V2 | `V2__criar_medicoes.sql` | Tabela `medicoes`, com a chave estrangeira para `idosos` |
+| V3 | `V3__criar_alertas.sql` | Tabela `alertas`, com a chave estrangeira única para `medicoes` |
