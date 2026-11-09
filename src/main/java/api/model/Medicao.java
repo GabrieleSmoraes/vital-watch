@@ -37,4 +37,35 @@ public class Medicao {
     @Column(name = "em_exercicio", nullable = false)
     private Boolean emExercicio;
 
+    // O Hibernate precisa deste construtor vazio para montar o objeto a partir do banco.
+    protected Medicao() {
+    }
+
+    public Medicao(Idoso idoso, Integer batimentos, LocalDateTime dataHoraMedicao, Boolean emExercicio) {
+        this.idoso = idoso;
+        this.batimentos = batimentos;
+        this.dataHoraMedicao = dataHoraMedicao;
+        this.emExercicio = emExercicio;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Idoso getIdoso() {
+        return idoso;
+    }
+
+    public Integer getBatimentos() {
+        return batimentos;
+    }
+
+    public LocalDateTime getDataHoraMedicao() {
+        return dataHoraMedicao;
+    }
+
+    public Boolean getEmExercicio() {
+        return emExercicio;
+    }
+
 }
